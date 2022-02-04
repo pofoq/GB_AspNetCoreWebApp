@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CodeExamplesConsole.AspNetCoreWebApp._1_async.HomeWork
+namespace AsyncAppConsole
 {
     internal class Post
     {
