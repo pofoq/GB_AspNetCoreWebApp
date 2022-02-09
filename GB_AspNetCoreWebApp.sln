@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeExampleConsole", "CodeExampleConsole\CodeExampleConsole.csproj", "{DC5AB326-8756-435E-90E2-6C9781DD22F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeExampleConsole", "CodeExampleConsole\CodeExampleConsole.csproj", "{DC5AB326-8756-435E-90E2-6C9781DD22F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncAppConsole", "AsyncAppConsole\AsyncAppConsole.csproj", "{DDA52A2E-6119-461D-8B59-4648188DAEA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncAppConsole", "AsyncAppConsole\AsyncAppConsole.csproj", "{DDA52A2E-6119-461D-8B59-4648188DAEA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{4A0A7FFF-BAD7-4B8E-A88C-DC92BDC4789D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{DDA52A2E-6119-461D-8B59-4648188DAEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDA52A2E-6119-461D-8B59-4648188DAEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDA52A2E-6119-461D-8B59-4648188DAEA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A0A7FFF-BAD7-4B8E-A88C-DC92BDC4789D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A0A7FFF-BAD7-4B8E-A88C-DC92BDC4789D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A0A7FFF-BAD7-4B8E-A88C-DC92BDC4789D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A0A7FFF-BAD7-4B8E-A88C-DC92BDC4789D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
