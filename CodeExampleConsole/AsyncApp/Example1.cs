@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CodeExamplesConsole.AsyncApp
+namespace CodeExampleConsole.AsyncApp
 {
     internal static class Example1
     {
