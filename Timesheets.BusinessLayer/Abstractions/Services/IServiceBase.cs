@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Timesheets.BusinessLayer.Abstractions.Services
 {
-    public interface IServiceBase<T>
+    public interface IServiceBase<TDto, TId, TAddRequest>
     {
-        Task<T> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync(int count, int page, string searchByName);
-        Task<bool> AddAsync(T entity);
-        Task<bool> UpdateAsync(T entity);
-        Task<bool> DeleteAsync(T entity);
-
+        Task<TDto> GetByIdAsync(TId id, CancellationToken token);
+        Task<IEnumerable<TDto>> GetAllAsync(int count, int page, string searchByName, CancellationToken token);
+        Task<TDto> AddAsync(TAddRequest dto, CancellationToken token);
+        Task<bool> UpdateAsync(TDto dto, CancellationToken token);
+        Task<bool> DeleteAsync(TDto dto, CancellationToken token);
     }
 }

@@ -11,6 +11,9 @@ using Timesheets.BusinessLayer.Services;
 using Timesheets.DataLayer;
 using Timesheets.DataLayer.Abstractions.Repositories;
 using Timesheets.DataLayer.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Timesheets.BusinessLayer.Abstractions.Mappers;
+using Timesheets.BusinessLayer.Mappers;
 
 namespace WebApi
 {
@@ -31,9 +34,19 @@ namespace WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
-            services.AddTransient<IPersonRepository, PersonRepository>();
-            services.AddTransient<IPersonService, PersonService>();
+
+            var connectionString = Configuration.GetConnectionString("timesheetsDb");
+            services.AddDbContext<TimesheetDbContext>(options => options.UseSqlite(connectionString), ServiceLifetime.Scoped);
+
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IPersonService, PersonService>();
+            services.AddSingleton<IPersonMapper, PersonMapper>();
             services.AddSingleton(new Repo());
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IUserMapper, UserMapper>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

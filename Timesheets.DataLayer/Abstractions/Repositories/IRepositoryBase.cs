@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Timesheets.DataLayer.Abstractions.Repositories
 {
-    public interface IRepositoryBase<T>
+    public interface IRepositoryBase<TModel, TId>
     {
-        Task<T> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync(int count, int page, string searchByName);
-        Task<bool> AddAsync(T entity);
-        Task<bool> UpdateAsync(T entity);
-        Task<bool> DeleteAsync(T entity);
+        Task<TModel> GetByIdAsync(TId id, CancellationToken token);
+        Task<IEnumerable<TModel>> GetAllAsync(int count, int page, string searchByName, CancellationToken token);
+        Task<TModel> AddAsync(TModel model, CancellationToken token);
+        Task<bool> UpdateAsync(TModel model, CancellationToken token);
+        Task<bool> DeleteAsync(TModel model, CancellationToken token);
     }
 }

@@ -9,9 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncAppConsole", "AsyncApp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timesheets.Api", "WebApi\Timesheets.Api.csproj", "{D4CEEC75-23D0-4477-B806-1F488E14C91A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timesheets.BusinessLayer", "Timesheets.BusinessLayer\Timesheets.BusinessLayer.csproj", "{B02B3242-141A-456D-B3D6-9FE6255E2DDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timesheets.BusinessLayer", "Timesheets.BusinessLayer\Timesheets.BusinessLayer.csproj", "{B02B3242-141A-456D-B3D6-9FE6255E2DDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timesheets.DataLayer", "Timesheets.DataLayer\Timesheets.DataLayer.csproj", "{FBB01189-8E39-4474-B7FE-6698330F3F38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timesheets.DataLayer", "Timesheets.DataLayer\Timesheets.DataLayer.csproj", "{FBB01189-8E39-4474-B7FE-6698330F3F38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A447FC77-88B5-46AE-9BF2-6A5A270EF624}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
