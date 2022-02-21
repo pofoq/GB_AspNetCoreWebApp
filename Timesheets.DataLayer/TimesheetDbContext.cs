@@ -20,15 +20,15 @@ namespace Timesheets.DataLayer
             base.OnConfiguring(optionsBuilder);
 
             // BAD EXAMPLE
-            //optionsBuilder.UseSqlite(@"Data Source=c:\mydb.db;Version=3;");
+            optionsBuilder.UseSqlite(@"Data Source=timesheets.db;");
         }
 
 
-        // data model settings
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<User>().Ignore(e => e.Role);
-        }
+        //// data model settings
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    //modelBuilder.Entity<User>().Ignore(e => e.Role);
+        //}
     }
 }

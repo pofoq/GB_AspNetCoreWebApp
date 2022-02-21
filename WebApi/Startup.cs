@@ -35,8 +35,8 @@ namespace WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
 
-            var connectionString = Configuration.GetConnectionString("timesheetsDb");
-            services.AddDbContext<TimesheetDbContext>(options => options.UseSqlite(connectionString), ServiceLifetime.Scoped);
+            services.AddDbContext<TimesheetDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("TimesheetsDb")));
 
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IPersonService, PersonService>();
@@ -46,7 +46,6 @@ namespace WebApi
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IUserMapper, UserMapper>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

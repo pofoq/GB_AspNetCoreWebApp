@@ -20,7 +20,7 @@ namespace Timesheets.DataLayer.Repositories
 
         public async Task<User> AddAsync(User model, CancellationToken token)
         {
-            var r = await _context.AddAsync(model, token);
+            var r = await _context.Users.AddAsync(model, token);
             int result = await _context.SaveChangesAsync(token);
             return r.Entity;
         }

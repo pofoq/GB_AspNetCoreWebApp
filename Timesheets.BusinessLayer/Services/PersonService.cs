@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Timesheets.BusinessLayer.Abstractions.Mappers;
 using Timesheets.BusinessLayer.Abstractions.Services;
 using Timesheets.BusinessLayer.Dto;
+using Timesheets.BusinessLayer.Requests;
 using Timesheets.DataLayer.Abstractions.Repositories;
 
 namespace Timesheets.BusinessLayer.Services
@@ -20,12 +21,12 @@ namespace Timesheets.BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public Task<PersonDto> AddAsync(PersonDto entity, CancellationToken token)
+        public Task<PersonDto> AddAsync(AddPersonRequest request, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteAsync(PersonDto entity, CancellationToken token)
+        public Task<bool> DeleteAsync(PersonDto dto, CancellationToken token)
         {
             throw new NotImplementedException();
         }
@@ -38,11 +39,11 @@ namespace Timesheets.BusinessLayer.Services
 
         public async Task<PersonDto> GetByIdAsync(int id, CancellationToken token)
         {
-            var person = await _repository.GetByIdAsync(id, token);
-            return _mapper.Map(person);
+            var model = await _repository.GetByIdAsync(id, token);
+            return _mapper.Map(model);
         }
 
-        public Task<bool> UpdateAsync(PersonDto entity, CancellationToken token)
+        public Task<bool> UpdateAsync(PersonDto dto, CancellationToken token)
         {
             throw new NotImplementedException();
         }

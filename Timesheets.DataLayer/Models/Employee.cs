@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Timesheets.DataLayer.Models
 {
-    [Table("Employee", Schema = "ts")]
-    public class Employee
+    //[Table("Employee", Schema = "ts")]
+    public sealed class Employee
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

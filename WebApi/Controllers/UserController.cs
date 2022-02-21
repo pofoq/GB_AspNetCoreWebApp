@@ -28,7 +28,7 @@ namespace Timesheets.Api.Controllers
             return await _service.GetAllAsync(count, page, searchByName, _token);
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("{id}")]
         public async Task<UserDto> GetByIdAsync([FromRoute] Guid id)
         {
             return await _service.GetByIdAsync(id, _token);

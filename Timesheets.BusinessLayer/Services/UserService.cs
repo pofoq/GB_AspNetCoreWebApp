@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Timesheets.BusinessLayer.Abstractions.Mappers;
 using Timesheets.BusinessLayer.Abstractions.Services;
 using Timesheets.BusinessLayer.Dto;
+using Timesheets.BusinessLayer.Requests;
 using Timesheets.DataLayer.Abstractions.Repositories;
+using Timesheets.DataLayer.Models;
 
 namespace Timesheets.BusinessLayer.Services
 {
@@ -20,11 +22,16 @@ namespace Timesheets.BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public async Task<UserDto> AddAsync(UserDto dto, CancellationToken token)
+        public async Task<UserDto> AddAsync(AddUserRequest request, CancellationToken token)
         {
-            var model = _mapper.Map(dto);
+            var model = new User
+            {
+                PasswordHash = request.PasswordHash,
+                Role = request.Role,
+                Username = request.Username,
+            };
             model = await _repository.AddAsync(model, token);
-            dto = _mapper.Map(model);
+            var dto = _mapper.Map(model);
             return dto;
         }
 
