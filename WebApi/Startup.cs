@@ -6,10 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Timesheets.BusinessLayer.Abstractions.Services;
+using Timesheets.BusinessLayer.Services;
+using Timesheets.DataLayer;
+using Timesheets.DataLayer.Abstractions.Repositories;
+using Timesheets.DataLayer.Repositories;
 
 namespace WebApi
 {
@@ -25,12 +26,14 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
+            services.AddTransient<IPersonRepository, PersonRepository>();
+            services.AddTransient<IPersonService, PersonService>();
+            services.AddSingleton(new Repo());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
