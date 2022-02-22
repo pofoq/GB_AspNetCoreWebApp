@@ -46,6 +46,10 @@ namespace WebApi
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IUserMapper, UserMapper>();
+
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddSingleton<IEmployeeMapper, EmployeeMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

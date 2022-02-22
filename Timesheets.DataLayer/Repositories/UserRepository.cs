@@ -21,13 +21,13 @@ namespace Timesheets.DataLayer.Repositories
         public async Task<User> AddAsync(User model, CancellationToken token)
         {
             var r = await _context.Users.AddAsync(model, token);
-            int result = await _context.SaveChangesAsync(token);
+            await _context.SaveChangesAsync(token);
             return r.Entity;
         }
 
-        public async Task<bool> DeleteAsync(User entity, CancellationToken token)
+        public async Task<bool> DeleteByIdAsync(int id, CancellationToken token)
         {
-            var dbEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == entity.Id, cancellationToken: token);
+            var dbEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken: token);
 
             if (dbEntity == null)
             {
@@ -43,10 +43,10 @@ namespace Timesheets.DataLayer.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync(int count, int page, string searchByName, CancellationToken token)
         {
-            return await _context.Users.AsNoTracking().Where(u => u.Username.Contains(searchByName)).Skip(count * (page - 1)).Take(count).ToArrayAsync(token);
+            return await _context.Users.AsNoTracking().Where(u => u.Username.ToLower().Contains(searchByName.ToLower())).Skip(count * (page - 1)).Take(count).ToArrayAsync(token);
         }
 
-        public async Task<User> GetByIdAsync(Guid id, CancellationToken token)
+        public async Task<User> GetByIdAsync(int id, CancellationToken token)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id, token);
         }

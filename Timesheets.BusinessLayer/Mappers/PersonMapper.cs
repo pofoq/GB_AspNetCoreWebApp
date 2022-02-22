@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Timesheets.BusinessLayer.Abstractions.Mappers;
 using Timesheets.BusinessLayer.Dto;
 using Timesheets.DataLayer.Models;
@@ -7,28 +8,28 @@ namespace Timesheets.BusinessLayer.Mappers
 {
     public class PersonMapper : IPersonMapper
     {
-        public PersonDto Map(Person person) => new()
+        public PersonDto Map(Person model) => new()
         {
-            Id = person.Id,
-            Age = person.Age,
-            Company = person.Company,
-            Email = person.Email,
-            FirstName = person.FirstName,
-            LastName = person.LastName,
+            Id = model.Id,
+            Age = model.Age,
+            Company = model.Company,
+            Email = model.Email,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
         };
 
-        public IEnumerable<PersonDto> Map(IEnumerable<Person> persons)
+        public IEnumerable<PersonDto> Map(IEnumerable<Person> models)
         {
-            foreach (var person in persons)
+            foreach (var model in models)
             {
                 yield return new PersonDto
                 {
-                    Id = person.Id,
-                    Age = person.Age,
-                    Company = person.Company,
-                    Email = person.Email,
-                    FirstName = person.FirstName,
-                    LastName = person.LastName
+                    Id = model.Id,
+                    Age = model.Age,
+                    Company = model.Company,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName
                 };
             }
         }
@@ -45,18 +46,15 @@ namespace Timesheets.BusinessLayer.Mappers
 
         public IEnumerable<Person> Map(IEnumerable<PersonDto> dtos)
         {
-            foreach (var dto in dtos)
+            return dtos.Select(x => new Person()
             {
-                yield return new Person
-                {
-                    Id = dto.Id,
-                    Age = dto.Age,
-                    Company = dto.Company,
-                    Email = dto.Email,
-                    FirstName = dto.FirstName,
-                    LastName = dto.LastName
-                };
-            }
+                Id = x.Id,
+                Age = x.Age,
+                Company = x.Company,
+                Email = x.Email,
+                FirstName = x.FirstName,
+                LastName = x.LastName
+            });
         }
     }
 }
