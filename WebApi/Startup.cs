@@ -6,10 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Timesheets.BusinessLayer.Abstractions.Services;
+using Timesheets.BusinessLayer.Services;
+using Timesheets.DataLayer;
+using Timesheets.DataLayer.Abstractions.Repositories;
+using Timesheets.DataLayer.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Timesheets.BusinessLayer.Abstractions.Mappers;
+using Timesheets.BusinessLayer.Mappers;
 
 namespace WebApi
 {
@@ -25,12 +29,27 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
+
+            services.AddDbContext<TimesheetDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("TimesheetsDb")));
+
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IPersonService, PersonService>();
+            services.AddSingleton<IPersonMapper, PersonMapper>();
+            services.AddSingleton(new Repo());
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IUserMapper, UserMapper>();
+
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddSingleton<IEmployeeMapper, EmployeeMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
