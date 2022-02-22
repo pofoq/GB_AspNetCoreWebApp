@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Timesheets.BusinessLayer.Abstractions.Mappers;
@@ -21,14 +20,29 @@ namespace Timesheets.BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public Task<PersonDto> AddAsync(AddPersonRequest request, CancellationToken token)
+        public async Task<PersonDto> AddAsync(AddPersonRequest request, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var personDto = new PersonDto
+            {
+                Age = request.Age,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Company = request.Company,
+                Email = request.Email,
+            };
+
+            var model = await _repository.AddAsync(_mapper.Map(personDto), token);
+            if (model == null)
+            {
+                return new PersonDto();
+            }
+
+            return _mapper.Map(model);
         }
 
-        public Task<bool> DeleteAsync(PersonDto dto, CancellationToken token)
+        public async Task<bool> DeleteByIdAsync(int id, CancellationToken token)
         {
-            throw new NotImplementedException();
+            return await _repository.DeleteByIdAsync(id, token);
         }
 
         public async Task<IEnumerable<PersonDto>> GetAllAsync(int count, int page, string searchByName, CancellationToken token)
@@ -40,12 +54,16 @@ namespace Timesheets.BusinessLayer.Services
         public async Task<PersonDto> GetByIdAsync(int id, CancellationToken token)
         {
             var model = await _repository.GetByIdAsync(id, token);
+            if (model == null)
+            {
+                return new PersonDto();
+            }
             return _mapper.Map(model);
         }
 
         public Task<bool> UpdateAsync(PersonDto dto, CancellationToken token)
         {
-            throw new NotImplementedException();
+            return _repository.UpdateAsync(_mapper.Map(dto), token);
         }
     }
 }

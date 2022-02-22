@@ -1,9 +1,8 @@
-﻿using System;
-using Timesheets.DataLayer.Models;
+﻿using Timesheets.DataLayer.Models;
 
 namespace Timesheets.DataLayer.Abstractions.Repositories
 {
-    public interface IEmployeeRepository : IRepositoryBase<Employee, Guid>
+    public interface IEmployeeRepository : IRepositoryBase<Employee, int>
     {
 
     }

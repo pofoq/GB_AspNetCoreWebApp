@@ -7,7 +7,7 @@ namespace Timesheets.DataLayer
     {
         public TimesheetDbContext(DbContextOptions<TimesheetDbContext> options) : base(options) 
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         // table access
@@ -15,13 +15,13 @@ namespace Timesheets.DataLayer
         public DbSet<Employee> Employees { get; set; }
 
         // db access settings
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
 
-            // BAD EXAMPLE
-            optionsBuilder.UseSqlite(@"Data Source=timesheets.db;");
-        }
+        //    // BAD EXAMPLE
+        //    //optionsBuilder.UseSqlite(@"Data Source=timesheets.db;");
+        //}
 
 
         //// data model settings
