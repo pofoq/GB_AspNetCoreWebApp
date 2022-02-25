@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 using Timesheets.BusinessLayer.Abstractions.Mappers;
 using Timesheets.BusinessLayer.Abstractions.Services;
 using Timesheets.BusinessLayer.Dto;
 using Timesheets.BusinessLayer.Requests;
 using Timesheets.DataLayer.Abstractions.Repositories;
 using Timesheets.DataLayer.Models;
-using System.Text;
+using Timesheets.SecurityLayer.Dto;
+using Timesheets.SecurityLayer.Abstractions.Services;
 
 namespace Timesheets.BusinessLayer.Services
 {
-    public class UserService : IUserService
+    public sealed class UserService : SecurityService, IUserService
     {
         private readonly IUserRepository _repository;
         private readonly IUserMapper _mapper;
@@ -61,12 +61,66 @@ namespace Timesheets.BusinessLayer.Services
             return await _repository.UpdateAsync(model, token);
         }
 
-        private static byte[] GetPasswordHash(string password)
+        public async Task<TokenResponse> AuthenticateAsync(string username, string password, CancellationToken token)
         {
-            using (var sha1 = new SHA1CryptoServiceProvider())
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                return sha1.ComputeHash(Encoding.Unicode.GetBytes(password));
+                return null;
             }
+            var user = await _repository.GetByUsernameAsync(username, GetPasswordHash(password), token);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            return await UpdateToken(user, token);
+        }
+
+        public async Task<TokenResponse> RefreshToken(string refreshToken, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken) || string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return null;
+            }
+
+            var user = await _repository.GetByTokenAsync(refreshToken, token);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            var oldToken = new RefreshToken { Token = user.RefreshToken, Expires = user.Expires };
+
+            if (oldToken.IsExpired)
+            {
+                return null;
+            }
+
+            return await UpdateToken(user, token);
+        }
+
+        private async Task<TokenResponse> UpdateToken(User user, CancellationToken token)
+        {
+            var refreshToken = GenerateRefreshToken(user.Id, IUserService.AuthKey);
+            var jwtToken = GenerateJwtToken(user.Id, IUserService.AuthKey, 5);
+
+            var response = new TokenResponse
+            {
+                AccessToken = jwtToken,
+                RefreshToken = refreshToken.Token
+            };
+
+            user.RefreshToken = refreshToken.Token;
+            user.Expires = refreshToken.Expires;
+
+            if (await _repository.UpdateAsync(user, token))
+            {
+                return response;
+            }
+
+            return null;
         }
     }
 }

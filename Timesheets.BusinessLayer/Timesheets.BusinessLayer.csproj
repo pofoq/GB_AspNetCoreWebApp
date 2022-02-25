@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Timesheets.DataLayer\Timesheets.DataLayer.csproj" />
+    <ProjectReference Include="..\Timesheets.SecurityLayer\Timesheets.SecurityLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Responses\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -51,6 +50,17 @@ namespace Timesheets.DataLayer.Repositories
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id, token);
         }
 
+        public async Task<User> GetByTokenAsync(string refreshToken, CancellationToken token)
+        {
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.RefreshToken == refreshToken, token);
+        }
+
+        public async Task<User> GetByUsernameAsync(string username, byte[] passwordHash, CancellationToken token)
+        {
+            //return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username.ToLower(), token);
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username.ToLower() && u.PasswordHash == passwordHash, token);
+        }
+
         public async Task<bool> UpdateAsync(User entity, CancellationToken token)
         {
             var dbEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == entity.Id, token);
@@ -64,6 +74,8 @@ namespace Timesheets.DataLayer.Repositories
                 dbEntity.Username = entity.Username;
                 dbEntity.Role = entity.Role;
                 dbEntity.PasswordHash = entity.PasswordHash;
+                dbEntity.RefreshToken = entity.RefreshToken;
+                dbEntity.Expires = entity.Expires;
                 await _context.SaveChangesAsync(token);
                 return true;
             }

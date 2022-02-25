@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Timesheets.Api.Responses;
 using Timesheets.BusinessLayer.Abstractions.Services;
 using Timesheets.BusinessLayer.Dto;
 using Timesheets.BusinessLayer.Requests;
 
 namespace Timesheets.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -21,34 +26,126 @@ namespace Timesheets.Api.Controllers
             _token = new CancellationToken();
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetAllAsync([FromQuery] int count = 5, [FromQuery] int page = 1, [FromQuery] string searchByName = "")
+        [HttpGet("get")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllAsync([FromQuery] int count = 5, [FromQuery] int page = 1, [FromQuery] string searchByName = "")
         {
-            return await _service.GetAllAsync(count, page, searchByName, _token);
+            var users = await _service.GetAllAsync(count, page, searchByName, _token);
+            if (users == null)
+            {
+                return NotFound();
+            }
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<UserDto> GetByIdAsync([FromRoute] int id)
+        public async Task<ActionResult<UserDto>> GetByIdAsync([FromRoute] int id)
         {
-            return await _service.GetByIdAsync(id, _token);
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var user = await _service.GetByIdAsync(id, _token);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
         }
 
-        [HttpPost]
-        public async Task<UserDto> AddAsync([FromBody] AddUserRequest request)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] AddUserRequest request)
         {
-            return await _service.AddAsync(request, _token);
+            if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
+            {
+                return BadRequest(new { message = "Username and Password can't be empty" });
+            }
+
+            var user = await _service.AddAsync(request, _token);
+
+            if (user == null)
+            {
+                return BadRequest(new { message = "Username is used" });
+            }
+
+            return Ok(user);
         }
 
-        [HttpDelete]
-        public async Task<bool> DeleteAsync([FromBody] int id)
+        [HttpDelete("delete/{id}")]
+        public async Task<ActionResult<bool>> DeleteAsync([FromRoute] int id)
         {
-            return await _service.DeleteByIdAsync(id, _token);
+            if (await _service.DeleteByIdAsync(id, _token))
+            {
+                return Ok(true);
+            }
+
+            return NotFound();
         }
 
-        [HttpPut]
-        public async Task<bool> UpdateAsync([FromBody] UserDto dto)
+        [HttpPut("update")]
+        public async Task<ActionResult<bool>> UpdateAsync([FromBody] UserDto dto)
         {
-            return await _service.UpdateAsync(dto, _token);
+            if (await _service.UpdateAsync(dto, _token))
+            {
+                return Ok(true);
+            }
+
+            return NotFound(false);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<ActionResult<TokenResponse>> AuthenticateAsync([FromQuery] string userName, string password)
+        {
+            if (string.IsNullOrWhiteSpace(userName) && string.IsNullOrEmpty(password))
+            {
+                return BadRequest();
+            }
+
+            var response = await _service.AuthenticateAsync(userName, password, _token);
+
+            if (response is null)
+            {
+                return BadRequest(new { message = "Username or password is incorrect" });
+            }
+
+            SetTokenCookie(response.RefreshToken);
+
+            return Ok(new TokenResponse { RefreshToken = response.RefreshToken, Token = response.AccessToken });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<TokenResponse>> RefreshAsync()
+        {
+            string oldToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrWhiteSpace(oldToken))
+            {
+                return Unauthorized(new { message = "Invalid token" });
+            }
+
+            var newRefreshToken = await _service.RefreshToken(oldToken, _token);
+
+            if (string.IsNullOrWhiteSpace(newRefreshToken?.RefreshToken))
+            {
+                return Unauthorized(new { message = "Invalid token" });
+            }
+
+            SetTokenCookie(newRefreshToken.RefreshToken);
+
+            return Ok(new TokenResponse { RefreshToken = newRefreshToken.RefreshToken, Token = newRefreshToken.AccessToken });
+        }
+
+        private void SetTokenCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
     }
 }

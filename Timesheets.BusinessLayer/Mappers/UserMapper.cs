@@ -2,6 +2,8 @@
 using Timesheets.BusinessLayer.Abstractions.Mappers;
 using Timesheets.BusinessLayer.Dto;
 using Timesheets.DataLayer.Models;
+using System.Linq;
+using Timesheets.SecurityLayer.Abstractions.Services;
 
 namespace Timesheets.BusinessLayer.Mappers
 {
@@ -10,9 +12,9 @@ namespace Timesheets.BusinessLayer.Mappers
         public UserDto Map(User model) => new()
         {
             Id = model.Id,
-            PasswordHash = model.PasswordHash,
             Role = model.Role,
-            Username = model.Username
+            Username = model.Username,
+            Password = string.Empty,
         };
 
         public IEnumerable<UserDto> Map(IEnumerable<User> models)
@@ -22,9 +24,9 @@ namespace Timesheets.BusinessLayer.Mappers
                 yield return new UserDto
                 {
                     Id = model.Id,
-                    PasswordHash = model.PasswordHash,
                     Role = model.Role,
-                    Username = model.Username
+                    Username = model.Username,
+                    Password = string.Empty,
                 };
             }
         }
@@ -32,23 +34,20 @@ namespace Timesheets.BusinessLayer.Mappers
         public User Map(UserDto dto) => new()
         {
             Id = dto.Id,
-            PasswordHash = dto.PasswordHash,
             Role = dto.Role,
-            Username = dto.Username
+            Username = dto.Username,
+            PasswordHash = SecurityService.GetPasswordHash(dto.Password)
         };
 
         public IEnumerable<User> Map(IEnumerable<UserDto> dtos)
         {
-            foreach (var dto in dtos)
+            return dtos.Select(d => new User
             {
-                yield return new User
-                {
-                    Id = dto.Id,
-                    PasswordHash = dto.PasswordHash,
-                    Role = dto.Role,
-                    Username = dto.Username
-                };
-            }
+                Id = d.Id,
+                Role = d.Role,
+                Username = d.Username,
+                PasswordHash = SecurityService.GetPasswordHash(d.Password)
+            });
         }
 
     }
