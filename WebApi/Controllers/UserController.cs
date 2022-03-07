@@ -26,7 +26,7 @@ namespace Timesheets.Api.Controllers
             _token = new CancellationToken();
         }
 
-        [HttpGet("get")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAllAsync([FromQuery] int count = 5, [FromQuery] int page = 1, [FromQuery] string searchByName = "")
         {
             var users = await _service.GetAllAsync(count, page, searchByName, _token);
@@ -66,7 +66,7 @@ namespace Timesheets.Api.Controllers
 
             if (user == null)
             {
-                return BadRequest(new { message = "Username is used" });
+                return BadRequest(new { message = "Username is used or request is not valid" });
             }
 
             return Ok(user);
